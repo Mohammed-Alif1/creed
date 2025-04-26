@@ -6,6 +6,15 @@ import pydeck as pdk
 # Title of the Dashboard
 st.title("Coordinate Conversion Dashboard")
 
+# Earth radius in kilometers
+r = 6371
+
+# Function to calculate Cartesian coordinates
+def cartisian(a_rad, b_rad):
+    x = round(r * b_rad)
+    y = round(r * math.log(math.tan(math.pi / 4 + a_rad / 2)))
+    return (x, y)
+
 # Upload CSV File
 uploaded_file = st.file_uploader("Upload your coordinates CSV file", type="csv")
 
@@ -16,13 +25,7 @@ if uploaded_file is not None:
     
     # Check for Latitude and Longitude
     if 'latitude' in df.columns and 'longitude' in df.columns:
-        r = 6371
         cartisians = []
-        
-        def cartisian(a_rad, b_rad):
-            x = round(r * b_rad)
-            y = round(r * math.log(math.tan(math.pi / 4 + a_rad / 2)))
-            return (x, y)
         
         for index, row in df.iterrows():
             if -90 < row['latitude'] < 90 and -180 <= row['longitude'] <= 180:
@@ -55,11 +58,18 @@ latitude_input = st.number_input("Enter Latitude (-90 to 90)", min_value=-90.0, 
 longitude_input = st.number_input("Enter Longitude (-180 to 180)", min_value=-180.0, max_value=180.0, step=0.01)
 
 # Show Coordinates on Map
-if latitude_input and longitude_input:
+if -90<latitude_input<90 and -180<=longitude_input<=180:
+    # Convert input latitude and longitude to Cartesian coordinates
+    latitude_rad = math.radians(latitude_input)
+    longitude_rad = math.radians(longitude_input)
+    x, y = cartisian(latitude_rad, longitude_rad)
+
+    # Prepare data for visualization
     map_data = pd.DataFrame(
-        [{'latitude': latitude_input, 'longitude': longitude_input}]
+        [{'latitude': latitude_input, 'longitude': longitude_input, 'x': x, 'y': y}]
     )
-    st.write("Map Visualization:")
+
+    st.write("Map Visualization (Original Coordinates):")
     st.pydeck_chart(pdk.Deck(
         map_style="mapbox://styles/mapbox/light-v9",
         initial_view_state=pdk.ViewState(
@@ -74,7 +84,9 @@ if latitude_input and longitude_input:
                 data=map_data,
                 get_position='[longitude, latitude]',
                 get_color='[200, 30, 30, 160]',
-                get_radius=10000,
+                get_radius=60000,
             ),
         ],
     ))
+
+    st.write(f"Cartesian Coordinates: x = {x}, y = {y}")
