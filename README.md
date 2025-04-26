@@ -25,6 +25,9 @@ The **Geospatial Coordinate Converter** tackles the challenge of converting and 
   - 📌 Visualize coordinates on an interactive map.
 - **Deployment**:
   - 🔧 Built using Streamlit for user-friendly interaction.
+- **Additional Tools**:
+  - 🛠️ **Raw Code Checking**: Use `gcc-raw.py` to check the functionality of the code without the interface.
+  - ➗ **Formula Verification**: Use `gccc-formla.py` to analyze the formula used for geospatial conversions.
 
 ---
 
@@ -59,4 +62,4 @@ The **Geospatial Coordinate Converter** tackles the challenge of converting and 
 
 ---
 
-Let us know if you'd like more informatiion about this project. 🚀✨
+Let us know if you'd like more information about our project! 🚀✨
